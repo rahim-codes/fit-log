@@ -3,5 +3,5 @@ export interface PageProps {
 }
 
 export default function Page({ prop }: PageProps) {
-  return <div>data details page</div>;
+  return <div>data details page {prop}</div>;
 }

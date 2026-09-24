@@ -1,12 +1,20 @@
+"use client";
+import { WorkoutContext } from "@/context/WorkoutContext";
+import { Ifitlog } from "@/type/type";
 import Image from "next/image";
 import Link from "next/link";
+import { useContext } from "react";
 import logo from "../../../public/logo.png";
 
 export default function Navbar() {
+  const { plan, saved } = useContext(WorkoutContext) as {
+    plan: Ifitlog[];
+    saved: Ifitlog[];
+  };
   return (
-    <div className="bg-base-100 shadow-sm">
+    <div className="bg-base-100 shadow-sm sticky top-0 z-50">
       {/* Container wrapper with auto margin and horizontal padding */}
-      <div className="max-w-7xl mx-auto px-4 w-full">
+      <div className="max-w-7xl mx-auto px-4 w-full sticky">
         <div className="navbar p-0">
           <div className="navbar-start">
             <div className="dropdown">
@@ -61,11 +69,17 @@ export default function Navbar() {
           </div>
 
           <div className="navbar-end gap-2">
-            <Link href="/plan" className="btn">
+            <Link href="/plan" className="btn bg-transparent">
               Plan
+              <span className="bg-[#a3e635] p-2 rounded-2xl border-2 text-black">
+                {plan.length}
+              </span>
             </Link>
-            <Link href="/saved" className="btn">
+            <Link href="/saved" className="btn bg-transparent">
               Saved
+              <span className="p-2 rounded-2xl border-b-gray-600">
+                {saved.length}
+              </span>
             </Link>
           </div>
         </div>
