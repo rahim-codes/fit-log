@@ -26,17 +26,6 @@ export default function PlanManager({ isLoading = false }: PlanManagerProps) {
       setActiveTab: (tab: "plan" | "saved") => void;
     };
 
-  // Handle Remove Workout
-  const handleRemove = (id: number, name?: string) => {
-    if (activeTab === "plan") {
-      setPlan((prev) => prev.filter((item) => item.id !== id));
-      toast.info(`${name ?? "Workout"} deleted from today my plan`);
-    } else {
-      setSaved((prev) => prev.filter((item) => item.id !== id));
-      toast.info(`${name ?? "Workout"} deleted from `);
-    }
-  };
-
   const currentList = activeTab === "plan" ? plan : saved;
 
   const sortedList = [...currentList].sort((a, b) => {
@@ -45,6 +34,33 @@ export default function PlanManager({ isLoading = false }: PlanManagerProps) {
     if (sortBy === "rating") return b.rating - a.rating;
     return 0;
   });
+
+  // Handle Remove Workout
+  const handleRemove = (id: number) => {
+    const item = currentList.find((workout) => workout.id === id);
+    const workoutName = item?.name ?? "Workout";
+
+    if (activeTab === "plan") {
+      setPlan((prev) => prev.filter((workout) => workout.id !== id));
+      toast.info(`${workoutName} deleted from today my plan`);
+    } else {
+      setSaved((prev) => prev.filter((workout) => workout.id !== id));
+      toast.info(`${workoutName} deleted from saved workouts`);
+    }
+  };
+
+  const handleMarkAsDone = (id: number) => {
+    const item = currentList.find((workout) => workout.id === id);
+    const workoutName = item?.name ?? "Workout";
+
+    if (activeTab === "plan") {
+      setPlan((prev) => prev.filter((workout) => workout.id !== id));
+      toast.success(`${workoutName} completed! Great job! 🎉`);
+    } else {
+      setSaved((prev) => prev.filter((workout) => workout.id !== id));
+      toast.success(`${workoutName} completed! Great job! 🎉`);
+    }
+  };
 
   return (
     <div className="w-full max-w-7xl mx-auto space-y-6 text-white mt-10">
@@ -99,7 +115,7 @@ export default function PlanManager({ isLoading = false }: PlanManagerProps) {
           <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#a3e635] border-t-transparent" />
           <p className="mt-3 text-sm font-medium">Loading workouts…</p>
         </div>
-      ) : plan.length === 0 ? (
+      ) : sortedList.length === 0 ? (
         /* Empty State */
         <div className="flex flex-col items-center justify-center rounded-2xl bg-[#12141a]/50 border border-dashed border-gray-800/80 py-28 px-4 text-center">
           <h2 className="text-xl font-black uppercase tracking-wider text-white">
@@ -120,12 +136,18 @@ export default function PlanManager({ isLoading = false }: PlanManagerProps) {
         <div className="space-y-4 mb-10">
           {sortedList.map((item: Ifitlog) =>
             activeTab === "plan" ? (
-              <PlanCard key={item.id} item={item} handleRemove={handleRemove} />
+              <PlanCard
+                key={item.id}
+                item={item}
+                handleRemove={handleRemove}
+                handleMarkAsDone={handleMarkAsDone}
+              />
             ) : (
               <SavedCard
                 key={item.id}
                 item={item}
                 handleRemove={handleRemove}
+                handleMarkAsDone={handleMarkAsDone}
               />
             ),
           )}

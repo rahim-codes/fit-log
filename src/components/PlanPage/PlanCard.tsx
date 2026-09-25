@@ -3,26 +3,18 @@ import { Ifitlog } from "@/type/type";
 import { Check, Clock, Flame, Star, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import { toast } from "react-toastify";
 
 export interface PlanCardProps {
   item: Ifitlog;
   handleRemove: (id: number) => void;
+  handleMarkAsDone: (id: number) => void;
 }
 
-export default function PlanCard({ item, handleRemove }: PlanCardProps) {
-  const [isDone, setIsDone] = useState(false);
-
-  const handleMarkAsDone = () => {
-    if (isDone) {
-      setIsDone(false);
-      toast.info(`${item.name} unmarked as done.`);
-    } else {
-      setIsDone(true);
-      toast.success(`${item.name} completed! Great job! 🎉`);
-    }
-  };
+export default function PlanCard({
+  item,
+  handleRemove,
+  handleMarkAsDone,
+}: PlanCardProps) {
   return (
     <div className="flex flex-col md:flex-row items-start md:items-center justify-between rounded-2xl bg-[#12141a] border border-gray-800/60 p-4 gap-4 transition-colors hover:border-gray-700">
       {/* Left Side: Thumbnail + Info */}
@@ -70,7 +62,7 @@ export default function PlanCard({ item, handleRemove }: PlanCardProps) {
         </Link>
 
         <button
-          onClick={handleMarkAsDone}
+          onClick={() => handleMarkAsDone(item.id)}
           className="flex items-center gap-1.5 rounded-full bg-[#a3e635] px-5 py-2.5 text-xs font-bold text-black transition-colors hover:bg-[#86efac]"
         >
           <Check className="h-3.5 w-3.5 stroke-3" />
