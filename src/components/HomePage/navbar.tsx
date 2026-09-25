@@ -3,14 +3,25 @@ import { WorkoutContext } from "@/context/WorkoutContext";
 import { Ifitlog } from "@/type/type";
 import Image from "next/image";
 import Link from "next/link";
-import { useContext } from "react";
+import { useContext, useSyncExternalStore } from "react";
 import logo from "../../../public/logo.png";
 
+const emptySubscribe = () => () => {};
+function useIsMounted() {
+  return useSyncExternalStore(
+    emptySubscribe,
+    () => true, // Client snapshot
+    () => false, // Server snapshot
+  );
+}
+
 export default function Navbar() {
+  const isMounted = useIsMounted();
   const { plan, saved } = useContext(WorkoutContext) as {
     plan: Ifitlog[];
     saved: Ifitlog[];
   };
+
   return (
     <div className="bg-base-100 shadow-sm sticky top-0 z-50">
       {/* Container wrapper with auto margin and horizontal padding */}
@@ -72,13 +83,13 @@ export default function Navbar() {
             <Link href="/plan" className="btn bg-transparent">
               Plan
               <span className="bg-[#a3e635] p-2 rounded-2xl border-2 text-black">
-                {plan.length}
+                {isMounted ? plan.length : 0}
               </span>
             </Link>
             <Link href="/saved" className="btn bg-transparent">
               Saved
               <span className="p-2 rounded-2xl border-b-gray-600">
-                {saved.length}
+                {isMounted ? saved.length : 0}
               </span>
             </Link>
           </div>
