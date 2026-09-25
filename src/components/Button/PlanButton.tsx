@@ -13,8 +13,14 @@ const PlanButton = ({ workout }: { workout: Ifitlog }) => {
 
   const handleWorkoutPlan = () => {
     const isAlreadySaved = plan.some((item) => item.id === workout.id);
+    const isPlanFull = plan.length >= 5;
+
     if (isAlreadySaved) {
       toast.warn(`${workout.name} is already saved!`);
+      return;
+    } else if (isPlanFull) {
+      toast.error("You've reached the 5-lift cap for today!");
+      return;
     } else {
       setPlan((prevSaved) => [...prevSaved, workout]);
       toast.success(`${workout.name} added to today's plan 🎉`);
